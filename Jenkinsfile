@@ -1,3 +1,5 @@
-withFolderProperties{
-    echo("Foo: ${env.FOO}")
+node {
+    withFolderProperties{
+        echo("Foo: ${env.QWERTY}")
+    }
 }
