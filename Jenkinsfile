@@ -3,9 +3,7 @@ withFolderProperties{
 }
 
 pipeline {
-    agent {
-        any
-    }
+    agent any
     environment {
     }
     stages {
