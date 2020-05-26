@@ -7,7 +7,7 @@ pipeline {
     environment {
     }
     stages {
-        stage {
+        stage ("test") {
             steps{
                 echo "${TEST}"
             }
