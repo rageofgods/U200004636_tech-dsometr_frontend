@@ -131,10 +131,12 @@ pipeline {
         }
         stage("Application check") {
             steps {
-                echo "=====getting application status====="
-                    sh """
-                    curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Hello World"
-                    """
+                retry (3) {
+                    echo "=====getting application status====="
+                        sh """
+                        curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Hello World"
+                        """
+                }
             }
         }
     }
