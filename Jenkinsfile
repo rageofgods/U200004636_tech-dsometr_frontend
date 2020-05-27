@@ -1,17 +1,16 @@
-withFolderProperties{
-    def TEST =  "${env.QWERTY}"
-}
-
 pipeline {
     agent any
-    environment {
-    }
-    stages {
-        stage ("test") {
-            steps{
-                echo "${TEST}"
-            }
 
+    stages {
+        stage ("Build dev") {
+            steps{
+                build job: "/tech-dsometr/dev/tech-dsometr-build"
+            }
         }
+        //stage ("Deploy dev") {
+        //    steps{
+        //        build job: "/tech-dsometr/devtech-dsometr-deploy"
+        //    }
+        //}
     }
 }
