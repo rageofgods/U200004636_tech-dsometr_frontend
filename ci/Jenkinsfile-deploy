@@ -71,7 +71,7 @@ pipeline {
         )
     }
     stages {
-        stage("ocp login") {
+        stage("OCP login") {
             steps {
                 echo "=====ocp login====="
                 withCredentials([string(credentialsId: "$OCP_CRED_ID", variable: 'TOKEN')]) {
@@ -81,7 +81,7 @@ pipeline {
                 }
             }
         }
-        stage("ocp init image stream and teamplate") {
+        stage("OCP init image stream and teamplate") {
             steps {
                 echo "=====ocp login====="
                     sh """
@@ -90,7 +90,7 @@ pipeline {
                     """
             }
         }
-        stage("ocp deploy") {
+        stage("OCP deploy") {
             steps {
                 echo "=====ocp tag new image as latest====="
                     sh """
@@ -98,7 +98,7 @@ pipeline {
                     """
             }
         }
-        stage("ocp create new app from the template") {
+        stage("OCP create new app from the template") {
             when {
                 not {
                     expression {
@@ -119,7 +119,7 @@ pipeline {
                     """
             }
         }
-        stage("ocp get status") {
+        stage("OCP get status") {
             steps {
                 echo "=====Waiting 15 second to build process catch-up====="
                 sleep(time:15,unit:"SECONDS")
