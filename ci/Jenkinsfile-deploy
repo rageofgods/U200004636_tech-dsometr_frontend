@@ -32,9 +32,9 @@ withFolderProperties{
     DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
 }
 
-if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
+if (DEPLOY_ENVIRONMENT == '' || DEPLOY_ENVIRONMENT == null || DEPLOY_ENVIRONMENT == 'null') {
     currentBuild.result = 'ABORTED'
-    error('Not defined BUILD_ENVIRONMENT in Folder properies plugin!')
+    error('Not defined DEPLOY_ENVIRONMENT in Folder properies plugin!')
 }
 if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
     currentBuild.result = 'ABORTED'
@@ -43,7 +43,7 @@ if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
 
 pipeline {
     agent {
-        label "${BUILD_ENVIRONMENT}"
+        label "${DEPLOY_ENVIRONMENT}"
     }
 
     environment {
