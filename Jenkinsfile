@@ -9,7 +9,7 @@ pipeline {
         }
         stage ("Deploy dev") {
             steps{
-                build job: "/tech-dsometr/devtech-dsometr-deploy"
+                build job: "/tech-dsometr/dev/tech-dsometr-deploy"
             }
         }
     }
