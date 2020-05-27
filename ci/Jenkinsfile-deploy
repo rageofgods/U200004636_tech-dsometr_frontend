@@ -125,7 +125,7 @@ pipeline {
                 sleep(time:15,unit:"SECONDS")
                 echo "=====ocp get podes====="
                     sh """
-                    oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\/[1-99]\s+Running"
+                    oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\\/[1-99]\\s+Running"
                     """
             }
         }
