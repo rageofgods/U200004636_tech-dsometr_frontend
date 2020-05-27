@@ -7,7 +7,8 @@ def REGISTRY_CRED_ID = ""
 def OCP_URL_TARGET = ""
 def OCP_CRED_ID = ""
 def OCP_NAMESPACE = ""
-def OCP_APP_NAME = ""           
+def OCP_APP_NAME = ""
+def OCP_APP_BASE_URL = ""          
 def OCP_IMAGE_STREAM = ""
 def OCP_TEMPLATE_NAME = ""
 def GIT_BASE_URL = ""
@@ -24,7 +25,8 @@ withFolderProperties{
     OCP_URL_TARGET = "${env.OCP_URL_TARGET}"
     OCP_CRED_ID = "${env.OCP_CRED_ID}"
     OCP_NAMESPACE = "${env.OCP_NAMESPACE}"
-    OCP_APP_NAME = "${env.OCP_APP_NAME}"       
+    OCP_APP_NAME = "${env.OCP_APP_NAME}"
+    OCP_APP_BASE_URL = "${env.OCP_APP_BASE_URL}"
     OCP_IMAGE_STREAM = "${env.OCP_IMAGE_STREAM}"
     OCP_TEMPLATE_NAME = "${env.OCP_TEMPLATE_NAME}"
     GIT_BASE_URL = "${env.GIT_BASE_URL}"
@@ -56,7 +58,8 @@ pipeline {
         OCP_URL_TARGET = "${OCP_URL_TARGET}"
         OCP_CRED_ID = "${OCP_CRED_ID}"
         OCP_NAMESPACE = "${OCP_NAMESPACE}"
-        OCP_APP_NAME = "${OCP_APP_NAME}"       
+        OCP_APP_NAME = "${OCP_APP_NAME}"
+        OCP_APP_BASE_URL = "${OCP_APP_BASE_URL}"  
         OCP_IMAGE_STREAM = "${OCP_IMAGE_STREAM}"
         OCP_TEMPLATE_NAME = "${OCP_TEMPLATE_NAME}"
         GIT_BASE_URL = "${GIT_BASE_URL}"
@@ -123,6 +126,14 @@ pipeline {
                 echo "=====ocp get podes====="
                     sh """
                     oc get pods | grep Running | grep '1/1'
+                    """
+            }
+        }
+        stage("Application check") {
+            steps {
+                echo "=====getting application status====="
+                    sh """
+                    curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Hello World"
                     """
             }
         }
