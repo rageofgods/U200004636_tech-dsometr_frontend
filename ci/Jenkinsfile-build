@@ -6,12 +6,12 @@ def DOCKER_FILE_NAME = ""
 def DOCKER_BUILD_NAME = ""
 
 withFolderProperties{
-    def RH_REGISTRY = "${env.RH_REGISTRY}"
-    def RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
-    def REGISTRY = "${env.REGISTRY}"
-    def REGISTRY_CRED_ID = "${env.REGISTRY_CRED_ID}"
-    def DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
-    def DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
+    RH_REGISTRY = "${env.RH_REGISTRY}"
+    RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
+    REGISTRY = "${env.REGISTRY}"
+    REGISTRY_CRED_ID = "${env.REGISTRY_CRED_ID}"
+    DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
+    DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
 }
 
 if (RH_REGISTRY == '' || RH_REGISTRY == null || RH_REGISTRY == 'null') {
