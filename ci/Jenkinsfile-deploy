@@ -31,7 +31,7 @@ withFolderProperties{
     GIT_BASE_URL = "${env.GIT_BASE_URL}"
     GIT_CRED_ID = "${env.GIT_CRED_ID}"
     DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
-    defDOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
+    DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
 }
 
 if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
