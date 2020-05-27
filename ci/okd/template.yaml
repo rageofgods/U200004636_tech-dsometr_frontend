@@ -1,22 +1,22 @@
 apiVersion: template.openshift.io/v1    
 kind: Template
 labels:
-  app: ext-test
-  template: ext-test-template
+  app: tech-dsometr
+  template: tech-dsometr-template
 metadata:
   annotations:
-    description: ext-test Frontend service
-    openshift.io/display-name: ext-test
-    openshift.io/provider-display-name: ext-test
-    tags: ext-test
-  name: ext-test
+    description: tech-dsometr Frontend service
+    openshift.io/display-name: tech-dsometr
+    openshift.io/provider-display-name: tech-dsometr
+    tags: tech-dsometr
+  name: tech-dsometr
 objects:
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
-        app: ext-test
-      name: ext-test
+        app: tech-dsometr
+      name: tech-dsometr
       namespace: tech-nexign-sbx
     spec:
       replicas: 1
@@ -33,9 +33,9 @@ objects:
       template:
         metadata:
           labels:
-            app: ext-test
-            deploymentconfig: ext-test
-        name: ext-test-pod
+            app: tech-dsometr
+            deploymentconfig: tech-dsometr
+        name: tech-dsometr-pod
         spec:
           containers:
             - env:
@@ -49,7 +49,7 @@ objects:
                 periodSeconds: 10
                 successThreshold: 1
                 timeoutSeconds: 1
-              name: ext-test
+              name: tech-dsometr
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -73,18 +73,18 @@ objects:
         - imageChangeParams:
             automatic: true
             containerNames:
-              - ext-test
+              - tech-dsometr
             from:
               kind: ImageStreamTag
-              name: 'ext-test:latest'
+              name: 'tech-dsometr:latest'
               namespace: tech-nexign-sbx
           type: ImageChange
   - apiVersion: v1
     kind: Service
     metadata:
-      name: ext-test
+      name: tech-dsometr
       labels:
-        app: ext-test
+        app: tech-dsometr
     spec:
       type: ClusterIP
       ports:
@@ -92,11 +92,11 @@ objects:
         protocol: TCP
         targetPort: 8080
       selector:
-        app: ext-test
+        app: tech-dsometr
   - apiVersion: v1
     kind: Route
     metadata:
-      name: ext-test
+      name: tech-dsometr
       annotations:
         haproxy.router.openshift.io/timeout: 4m
     spec:
@@ -105,4 +105,4 @@ objects:
         termination: edge
       to:
         kind: Service
-        name: ext-test
+        name: tech-dsometr

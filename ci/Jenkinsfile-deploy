@@ -40,7 +40,9 @@ if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT ==
 }
 
 pipeline {
-    agent any
+    agent {
+        label "${BUILD_ENVIRONMENT}"
+    }
 
     environment {
         BUILD_ENVIRONMENT = "${BUILD_ENVIRONMENT}"
@@ -65,31 +67,62 @@ pipeline {
         )
     }
     stages {
-        stage("Docker registry login") {
+        stage("ocp login") {
             steps {
-                echo "=====docker login registry====="
-                withCredentials([usernamePassword(credentialsId: "$REGISTRY_CRED_ID", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                echo "=====ocp login====="
+                withCredentials([string(credentialsId: "$OCP_CRED_ID", variable: 'TOKEN')]) {
                     sh """
-                    docker login $RH_REGISTRY -u $USERNAME -p $PASSWORD
-                    docker login $REGISTRY -u $USERNAME -p $PASSWORD
+                    oc login $OCP_URL_TARGET --token $TOKEN
                     """
                 }
             }
         }
-        stage("Docker build image") {
+        stage("ocp init image stream and teamplate") {
             steps {
-                echo "=====docker login and build====="
-                sh """
-                docker build -t $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME .
-                """
+                echo "=====ocp login====="
+                    sh """
+                    oc apply -f $OCP_IMAGE_STREAM
+                    oc apply -f $OCP_TEMPLATE_NAME
+                    """
             }
         }
-        stage("Docker push image") {
+        stage("ocp deploy") {
             steps {
-                echo "=====docker login and push====="
-                sh """
-                docker push $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT
-                """
+                echo "=====ocp tag new image as latest====="
+                    sh """
+                    oc tag $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT $DOCKER_BUILD_NAME:latest
+                    """
+            }
+        }
+        stage("ocp create new app from the template") {
+            when {
+                not {
+                    expression {
+                        def status = sh(script: "oc get all --selector app=$OCP_APP_NAME | grep Running", returnStatus: true) 
+                        if (status != 0) {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            }
+            steps {
+                echo "=====ocp create application====="
+                    sh """
+                    oc new-app --template=$OCP_APP_NAME
+                    """
+            }
+        }
+        stage("ocp get status") {
+            steps {
+                echo "=====Waiting 15 second to build process catch-up====="
+                sleep(time:15,unit:"SECONDS")
+                echo "=====ocp get podes====="
+                    sh """
+                    oc get pods | grep Running | grep '1/1'
+                    """
             }
         }
     }
