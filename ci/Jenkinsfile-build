@@ -1,3 +1,4 @@
+def BUILD_ENVIRONMENT = ""
 def RH_REGISTRY = ""
 def RH_REGISTRY_CRED_ID = ""
 def REGISTRY = ""
@@ -6,6 +7,7 @@ def DOCKER_FILE_NAME = ""
 def DOCKER_BUILD_NAME = ""
 
 withFolderProperties{
+    BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
     RH_REGISTRY = "${env.RH_REGISTRY}"
     RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
     REGISTRY = "${env.REGISTRY}"
@@ -14,13 +16,15 @@ withFolderProperties{
     DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
 }
 
-if (RH_REGISTRY == '' || RH_REGISTRY == null || RH_REGISTRY == 'null') {
+if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
     currentBuild.result = 'ABORTED'
-    error('Not defined RH_REGISTRY in Folder properies plugin!')
+    error('Not defined BUILD_ENVIRONMENT in Folder properies plugin!')
 }
 
 pipeline {
-    agent any
+    agent {
+        label "${BUILD_ENVIRONMENT}"
+    }
 
     environment {
         RH_REGISTRY = "${RH_REGISTRY}"
