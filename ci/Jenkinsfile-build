@@ -4,7 +4,7 @@ def RH_REGISTRY_CRED_ID = ""
 def REGISTRY = ""
 def REGISTRY_CRED_ID = ""
 def DOCKER_FILE_NAME = ""
-def DOCKER_BUILD_NAME = ""
+def OCP_APP_NAME = ""
 
 withFolderProperties{
     BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
@@ -13,12 +13,16 @@ withFolderProperties{
     REGISTRY = "${env.REGISTRY}"
     REGISTRY_CRED_ID = "${env.REGISTRY_CRED_ID}"
     DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
-    DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
+    OCP_APP_NAME = "${env.OCP_APP_NAME}"
 }
 
 if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
     currentBuild.result = 'ABORTED'
     error('Not defined BUILD_ENVIRONMENT in Folder properies plugin!')
+}
+if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
+    currentBuild.result = 'ABORTED'
+    error('Not defined OCP_APP_NAME in Folder properies plugin!')
 }
 
 pipeline {
@@ -32,7 +36,7 @@ pipeline {
         REGISTRY = "${REGISTRY}"
         REGISTRY_CRED_ID = "${REGISTRY_CRED_ID}"
         DOCKER_FILE_NAME = "${DOCKER_FILE_NAME}"
-        DOCKER_BUILD_NAME = "${OCP_APP_NAME}" //docker build name = ocp app name
+        OCP_APP_NAME = "${OCP_APP_NAME}"
         GIT_COMMIT_SHORT = sh(
             script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
             returnStdout: true
@@ -58,7 +62,7 @@ pipeline {
             steps {
                 echo "=====docker login and build====="
                 sh """
-                docker build -t $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME .
+                docker build -t $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME .
                 """
             }
         }
@@ -66,7 +70,7 @@ pipeline {
             steps {
                 echo "=====docker login and push====="
                 sh """
-                docker push $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT
+                docker push $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT
                 """
             }
         }

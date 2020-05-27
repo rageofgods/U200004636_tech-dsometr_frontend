@@ -13,7 +13,6 @@ def OCP_TEMPLATE_NAME = ""
 def GIT_BASE_URL = ""
 def GIT_CRED_ID = ""
 def DOCKER_FILE_NAME = ""
-def DOCKER_BUILD_NAME = ""
 
 withFolderProperties{
     BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
@@ -31,12 +30,15 @@ withFolderProperties{
     GIT_BASE_URL = "${env.GIT_BASE_URL}"
     GIT_CRED_ID = "${env.GIT_CRED_ID}"
     DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
-    DOCKER_BUILD_NAME = "${env.DOCKER_BUILD_NAME}"
 }
 
 if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
     currentBuild.result = 'ABORTED'
     error('Not defined BUILD_ENVIRONMENT in Folder properies plugin!')
+}
+if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
+    currentBuild.result = 'ABORTED'
+    error('Not defined OCP_APP_NAME in Folder properies plugin!')
 }
 
 pipeline {
@@ -60,7 +62,6 @@ pipeline {
         GIT_BASE_URL = "${GIT_BASE_URL}"
         GIT_CRED_ID = "${GIT_CRED_ID}"
         DOCKER_FILE_NAME = "${DOCKER_FILE_NAME}"
-        DOCKER_BUILD_NAME = "${OCP_APP_NAME}" //docker build name = ocp app name
         GIT_COMMIT_SHORT = sh(
             script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
             returnStdout: true
@@ -90,7 +91,7 @@ pipeline {
             steps {
                 echo "=====ocp tag new image as latest====="
                     sh """
-                    oc tag $REGISTRY/$DOCKER_BUILD_NAME:$GIT_COMMIT_SHORT $DOCKER_BUILD_NAME:latest
+                    oc tag $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT $OCP_APP_NAME:latest
                     """
             }
         }

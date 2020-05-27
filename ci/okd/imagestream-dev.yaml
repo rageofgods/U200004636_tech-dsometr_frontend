@@ -1,7 +1,7 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: ext-test
+  name: tech-dsometr
   namespace: tech-nexign-sbx
 spec:
   lookupPolicy:
@@ -10,7 +10,7 @@ spec:
     - annotations: null
       from:
         kind: DockerImage
-        name: 'registry.dso.techpark.local/ext-test:latest'
+        name: 'registry.dso.techpark.local/tech-dsometr:latest'
       importPolicy: {}
       name: latest
       referencePolicy:
