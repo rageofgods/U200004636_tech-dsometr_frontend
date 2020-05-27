@@ -1,4 +1,4 @@
-FROM $RH_REGISTRY/rhscl/nginx-116-rhel7 as base
+FROM ${RH_REGISTRY}/rhscl/nginx-116-rhel7 as base
 
 #RUN yum -y install nginx
 
