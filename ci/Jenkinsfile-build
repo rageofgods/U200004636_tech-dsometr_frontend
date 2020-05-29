@@ -1,10 +1,10 @@
-def BUILD_ENVIRONMENT = ""
+/*def BUILD_ENVIRONMENT = ""
 def RH_REGISTRY = ""
 def RH_REGISTRY_CRED_ID = ""
 def REGISTRY = ""
 def REGISTRY_CRED_ID = ""
 def DOCKER_FILE_NAME = ""
-def OCP_APP_NAME = ""
+def OCP_APP_NAME = "" */
 
 withFolderProperties{
     BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
@@ -35,12 +35,12 @@ pipeline {
     }
 
     environment {
-        RH_REGISTRY = "${RH_REGISTRY}"
+        /*RH_REGISTRY = "${RH_REGISTRY}"
         RH_REGISTRY_CRED_ID = "${RH_REGISTRY_CRED_ID}"
         REGISTRY = "${REGISTRY}"
         REGISTRY_CRED_ID = "${REGISTRY_CRED_ID}"
         DOCKER_FILE_NAME = "${DOCKER_FILE_NAME}"
-        OCP_APP_NAME = "${OCP_APP_NAME}"
+        OCP_APP_NAME = "${OCP_APP_NAME}"*/
         GIT_COMMIT_SHORT = sh(
             script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
             returnStdout: true
@@ -50,11 +50,12 @@ pipeline {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                //buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                 buildDescription "Executed @ ${NODE_NAME}"
             }
         }
-        
+
         stage("Docker registry login") {
             steps {
                 echo "=====docker login registry====="
