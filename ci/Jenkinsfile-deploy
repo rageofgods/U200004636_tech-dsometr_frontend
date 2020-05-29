@@ -48,6 +48,10 @@ pipeline {
         label "${DEPLOY_ENVIRONMENT}"
     }
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+
     environment {
         BUILD_ENVIRONMENT = "${BUILD_ENVIRONMENT}"
         DEPLOY_ENVIRONMENT = "${DEPLOY_ENVIRONMENT}"
@@ -71,6 +75,13 @@ pipeline {
         )
     }
     stages {
+        stage("Set build name") {
+            steps {
+                // use name of the patchset as the build name
+                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                buildDescription "Executed @ ${NODE_NAME}"
+            }
+        }
         stage("OCP login") {
             steps {
                 echo "=====ocp login====="
@@ -123,7 +134,7 @@ pipeline {
             steps {
                 echo "=====Waiting 15 second to build process catch-up====="
                 sleep(time:15,unit:"SECONDS")
-                echo "=====ocp get podes status (must be alive for < 1 minutes)====="
+                echo "=====ocp get podes status (must be alive for < 2 minutes)====="
                     sh """
                     oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\\/[1-99]\\s+Running\\s+[0-99]\\s+([1-9]s|[1-9][1-9]s|1m)"
                     """

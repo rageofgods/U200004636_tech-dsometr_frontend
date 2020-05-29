@@ -30,6 +30,10 @@ pipeline {
         label "${BUILD_ENVIRONMENT}"
     }
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+
     environment {
         RH_REGISTRY = "${RH_REGISTRY}"
         RH_REGISTRY_CRED_ID = "${RH_REGISTRY_CRED_ID}"
@@ -43,6 +47,14 @@ pipeline {
         )
     }
     stages {
+        stage("Set build name") {
+            steps {
+                // use name of the patchset as the build name
+                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                buildDescription "Executed @ ${NODE_NAME}"
+            }
+        }
+        
         stage("Docker registry login") {
             steps {
                 echo "=====docker login registry====="
