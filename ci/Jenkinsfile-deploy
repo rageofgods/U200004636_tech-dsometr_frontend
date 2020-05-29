@@ -1,20 +1,3 @@
-/*def BUILD_ENVIRONMENT = ""
-def DEPLOY_ENVIRONMENT = ""
-def RH_REGISTRY = ""
-def RH_REGISTRY_CRED_ID = ""
-def REGISTRY = ""
-def REGISTRY_CRED_ID = ""
-def OCP_URL_TARGET = ""
-def OCP_CRED_ID = ""
-def OCP_NAMESPACE = ""
-def OCP_APP_NAME = ""
-def OCP_APP_BASE_URL = ""          
-def OCP_IMAGE_STREAM = ""
-def OCP_TEMPLATE_NAME = ""
-def GIT_BASE_URL = ""
-def GIT_CRED_ID = ""
-def DOCKER_FILE_NAME = ""*/
-
 withFolderProperties{
     BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
     DEPLOY_ENVIRONMENT = "${env.DEPLOY_ENVIRONMENT}"
@@ -53,22 +36,6 @@ pipeline {
     }
 
     environment {
-        /*BUILD_ENVIRONMENT = "${BUILD_ENVIRONMENT}"
-        DEPLOY_ENVIRONMENT = "${DEPLOY_ENVIRONMENT}"
-        RH_REGISTRY = "${RH_REGISTRY}"
-        RH_REGISTRY_CRED_ID = "${RH_REGISTRY_CRED_ID}"
-        REGISTRY = "${REGISTRY}"
-        REGISTRY_CRED_ID = "${REGISTRY_CRED_ID}"
-        OCP_URL_TARGET = "${OCP_URL_TARGET}"
-        OCP_CRED_ID = "${OCP_CRED_ID}"
-        OCP_NAMESPACE = "${OCP_NAMESPACE}"
-        OCP_APP_NAME = "${OCP_APP_NAME}"
-        OCP_APP_BASE_URL = "${OCP_APP_BASE_URL}"  
-        OCP_IMAGE_STREAM = "${OCP_IMAGE_STREAM}"
-        OCP_TEMPLATE_NAME = "${OCP_TEMPLATE_NAME}"
-        GIT_BASE_URL = "${GIT_BASE_URL}"
-        GIT_CRED_ID = "${GIT_CRED_ID}"
-        DOCKER_FILE_NAME = "${DOCKER_FILE_NAME}"*/
         GIT_COMMIT_SHORT = sh(
             script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
             returnStdout: true
