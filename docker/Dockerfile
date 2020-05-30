@@ -10,7 +10,7 @@ ADD docker/nginx.conf /etc/nginx/
 RUN echo "<!DOCTYPE html>" \
          "<html>" \
          "<head>" \
-         "<title>DSO-TECHMETR</title>" \
+         "<title>TECH-DSOMETR</title>" \
          "</head>" \
          "<body>" \
          "<p1>Current build number is: ${BUILD_NUMBER}</p1>" \
