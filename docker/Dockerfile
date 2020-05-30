@@ -3,11 +3,10 @@ ARG BUILD_NUMBER
 
 FROM ${RH_REGISTRY}/rhscl/nginx-116-rhel7 as base
 
-#RUN yum -y install nginx
-
 ADD docker/nginx.conf /etc/nginx/
-#ADD docker/index.html /usr/share/nginx/html/
-RUN echo "<!DOCTYPE html>" \
+
+RUN echo "#!/bin/bash" > script.sh
+RUN echo "echo '<!DOCTYPE html>" \
          "<html>" \
          "<head>" \
          "<title>TECH-DSOMETR</title>" \
@@ -15,7 +14,11 @@ RUN echo "<!DOCTYPE html>" \
          "<body>" \
          "<p1>Current build number is: ${BUILD_NUMBER}</p1>" \
          "</body>" \
-         "</html>" > /usr/share/nginx/html/index.html
+         "</html>' > /usr/share/nginx/html/index.html" >> script.sh
+
+RUN chmod +x script.sh
+USER root
+RUN ./script.sh
 
 EXPOSE 8080
 
