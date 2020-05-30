@@ -1,5 +1,4 @@
 ARG RH_REGISTRY_ARG
-
 FROM ${RH_REGISTRY_ARG}/rhscl/nginx-116-rhel7 as base
 
 ARG BUILD_NUMBER_ARG
