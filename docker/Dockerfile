@@ -5,6 +5,8 @@ FROM ${RH_REGISTRY}/rhscl/nginx-116-rhel7 as base
 
 ADD docker/nginx.conf /etc/nginx/
 
+RUN echo "${BUILD_NUMBER}"
+
 RUN echo "#!/bin/bash" > script.sh
 RUN echo "echo '<!DOCTYPE html>" \
          "<html>" \
