@@ -61,7 +61,9 @@ pipeline {
             steps {
                 echo "=====docker login and build====="
                 sh """
-                docker build -t $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME --build-arg RH_REGISTRY=${RH_REGISTRY} BUILD_NUMBER=$GIT_COMMIT_SHORT .
+                docker build -t $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME \
+                    --build-arg RH_REGISTRY=${RH_REGISTRY} \
+                    --build-arg BUILD_NUMBER=$GIT_COMMIT_SHORT .
                 """
             }
         }
