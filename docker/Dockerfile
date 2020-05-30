@@ -1,11 +1,11 @@
 ARG RH_REGISTRY
-ARG BUILD_NUMBER
+ARG GIT_COMMIT_SHORT
 
 FROM ${RH_REGISTRY}/rhscl/nginx-116-rhel7 as base
 
 ADD docker/nginx.conf /etc/nginx/
 
-RUN echo "${BUILD_NUMBER}"
+RUN echo "${GIT_COMMIT_SHORT}"
 
 RUN echo "#!/bin/bash" > script.sh
 RUN echo "echo '<!DOCTYPE html>" \
@@ -14,7 +14,7 @@ RUN echo "echo '<!DOCTYPE html>" \
          "<title>TECH-DSOMETR</title>" \
          "</head>" \
          "<body>" \
-         "<p1>Current build number is: ${BUILD_NUMBER}</p1>" \
+         "<p1>Current build number is: ${GIT_COMMIT_SHORT}</p1>" \
          "</body>" \
          "</html>' > /usr/share/nginx/html/index.html" >> script.sh
 
