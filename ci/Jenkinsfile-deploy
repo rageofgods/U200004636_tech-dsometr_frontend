@@ -107,9 +107,9 @@ pipeline {
                     oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\\/[1-99]\\s+Running\\s+[0-99]\\s+([1-9]s|[1-9][1-9]s|1m)"
                     """
                 */
-                echo "=====ocp get podes status (must be alive for < 2 minutes)====="
+                echo "=====ocp get rpollout status====="
                     sh """
-                    oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\\/[1-99]\\s+Running"
+                    oc rollout status dc/$OCP_APP_NAME | grep "successfully rolled out"
                     """
                 
             }
@@ -119,7 +119,7 @@ pipeline {
                 retry (3) {
                     echo "=====getting application status====="
                         sh """
-                        curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Hello World"
+                        curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Current build number is: ${GIT_COMMIT_SHORT}"
                         """
                 }
             }
