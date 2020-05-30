@@ -1,11 +1,9 @@
 ARG RH_REGISTRY_ARG
-ARG BUILD_NUMBER_ARG
 
 FROM ${RH_REGISTRY_ARG}/rhscl/nginx-116-rhel7 as base
 
+ARG BUILD_NUMBER_ARG
 ADD docker/nginx.conf /etc/nginx/
-
-RUN echo "$BUILD_NUMBER_ARG"
 
 RUN echo "#!/bin/bash" > script.sh
 RUN echo "echo '<!DOCTYPE html>" \
