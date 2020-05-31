@@ -32,11 +32,15 @@ pipeline {
             returnStdout: true
         )
     }
+    parameters {
+        string(name: 'BRANCH', defaultValue: "master")
+    }
+    
     stages {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                 buildDescription "Executed @ ${NODE_NAME}"
             }
