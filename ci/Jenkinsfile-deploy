@@ -46,7 +46,14 @@ pipeline {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                script {
+                    if ("${params.BRANCH}" == 'null'){
+                        buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                    }
+                    else {
+                        buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                    }
+                }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                 buildDescription "Executed @ ${NODE_NAME}"
             }
