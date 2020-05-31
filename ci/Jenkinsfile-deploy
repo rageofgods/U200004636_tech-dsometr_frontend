@@ -64,7 +64,11 @@ pipeline {
             steps {
                 echo "=====ocp login====="
                     sh """
-                    oc apply -f $OCP_IMAGE_STREAM
+                    oc process -f $OCP_IMAGE_STREAM \
+                               -p APP_NAME=$OCP_APP_NAME \
+                               -p NAMESPACE_NAME=$OCP_NAMESPACE \
+                               -p REGISTRY_PATH=$REGISTRY/$OCP_APP_NAME:latest \
+                               -o yaml | oc apply -f -
                     oc apply -f $OCP_TEMPLATE_NAME
                     """
             }
