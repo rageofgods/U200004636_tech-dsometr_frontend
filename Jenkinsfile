@@ -16,29 +16,29 @@ pipeline {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                //buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
-                buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                 buildDescription "Executed @ ${NODE_NAME}"
             }
         }
         stage ("Build dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-build"
+                build job: "/tech-dsometr/dev/tech-dsometr-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
         stage ("Deploy dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-deploy"
+                build job: "/tech-dsometr/dev/tech-dsometr-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
         stage ("Build uat") {
             steps{
-                build job: "/tech-dsometr/uat/tech-dsometr-build"
+                build job: "/tech-dsometr/uat/tech-dsometr-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
         stage ("Deploy uat") {
             steps{
-                build job: "/tech-dsometr/uat/tech-dsometr-deploy"
+                build job: "/tech-dsometr/uat/tech-dsometr-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
     }
