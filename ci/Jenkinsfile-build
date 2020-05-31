@@ -32,10 +32,7 @@ pipeline {
             returnStdout: true
         )
     }
-    parameters {
-        string(name: 'BRANCH', defaultValue: "master")
-    }
-    
+
     stages {
         stage("Set build name") {
             steps {
