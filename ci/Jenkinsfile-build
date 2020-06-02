@@ -67,7 +67,7 @@ pipeline {
         }
         stage("Docker build image") {
             steps {
-                echo "=====docker login and build====="
+                echo "=====docker build====="
                 sh """
                 docker build -t $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME \
                     --build-arg RH_REGISTRY_ARG=${RH_REGISTRY} \

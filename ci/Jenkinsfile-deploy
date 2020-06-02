@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-        stage("OCP init image stream and teamplate") {
+        stage("OCP init imagestream and template") {
             steps {
                 echo "=====ocp login====="
                     sh """
@@ -77,8 +77,12 @@ pipeline {
                                -p NAMESPACE_NAME=$OCP_NAMESPACE \
                                -p REGISTRY_PATH=$REGISTRY/$OCP_APP_NAME:latest \
                                -o yaml | oc apply -f -
-                    oc apply -f $OCP_TEMPLATE_NAME
+                    oc process -f $OCP_TEMPLATE_NAME \
+                               -p APP_NAME=$OCP_APP_NAME \
+                               -p NAMESPACE_NAME=$OCP_NAMESPACE \
+                               -o yaml | oc apply -f -
                     """
+                    //oc apply -f $OCP_TEMPLATE_NAME
             }
         }
         stage("OCP deploy") {
@@ -89,7 +93,7 @@ pipeline {
                     """
             }
         }
-        stage("OCP create new app from the template") {
+        stage("OCP create new app") {
             when {
                 not {
                     expression {
