@@ -77,12 +77,12 @@ pipeline {
                                -p NAMESPACE_NAME=$OCP_NAMESPACE \
                                -p REGISTRY_PATH=$REGISTRY/$OCP_APP_NAME:latest \
                                -o yaml | oc apply -f -
-                    oc process -f $OCP_TEMPLATE_NAME \
+                    oc apply -f $OCP_TEMPLATE_NAME
+                    """
+                    /*oc process -f $OCP_TEMPLATE_NAME \
                                -p APP_NAME=$OCP_APP_NAME \
                                -p NAMESPACE_NAME=$OCP_NAMESPACE \
-                               -o yaml | oc apply -f -
-                    """
-                    //oc apply -f $OCP_TEMPLATE_NAME
+                               -o yaml | oc apply -f -*/
             }
         }
         stage("OCP deploy") {
@@ -110,7 +110,7 @@ pipeline {
             steps {
                 echo "=====ocp create application====="
                     sh """
-                    oc new-app --template=$OCP_APP_NAME
+                    oc new-app --template=$OCP_APP_NAME -p APP_NAME=$OCP_APP_NAME,NAMESPACE_NAME=$OCP_NAMESPACE
                     """
             }
         }
