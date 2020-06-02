@@ -110,7 +110,8 @@ pipeline {
             steps {
                 echo "=====ocp create application====="
                     sh """
-                    oc new-app --template=$OCP_APP_NAME -p APP_NAME=$OCP_APP_NAME,NAMESPACE_NAME=$OCP_NAMESPACE
+                    oc new-app --template=$OCP_APP_NAME -p APP_NAME=$OCP_APP_NAME \
+                                                        -p NAMESPACE_NAME=$OCP_NAMESPACE
                     """
             }
         }
