@@ -1,15 +1,15 @@
-apiVersion: template.openshift.io/v1    
+apiVersion: template.openshift.io/v1   
 kind: Template
 labels:
-  app: ${APP_NAME}
-  template: ${APP_NAME}-template
+  app: tech-dsometr
+  template: tech-dsometr-template
 metadata:
   annotations:
-    description: ${APP_NAME} Frontend service
-    openshift.io/display-name: ${APP_NAME}
-    openshift.io/provider-display-name: ${APP_NAME}
-    tags: ${APP_NAME}
-  name: ${APP_NAME}
+    description: tech-dsometr Frontend service
+    openshift.io/display-name: tech-dsometr
+    openshift.io/provider-display-name: tech-dsometr
+    tags: tech-dsometr
+  name: tech-dsometr
 objects:
   - apiVersion: v1
     kind: DeploymentConfig
