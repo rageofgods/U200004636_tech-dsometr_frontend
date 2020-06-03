@@ -131,7 +131,7 @@ pipeline {
                 
             }
         }
-        stage("Application check") {
+        /*stage("Application check") {
             steps {
                 retry (3) {
                     echo "=====getting application status====="
@@ -140,6 +140,6 @@ pipeline {
                         """
                 }
             }
-        }
+        }*/
     }
 }
