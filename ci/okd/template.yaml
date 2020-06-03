@@ -1,15 +1,15 @@
 apiVersion: template.openshift.io/v1   
 kind: Template
 labels:
-  app: tech-dsometr
-  template: tech-dsometr-template
+  app: tech-dsometr-front
+  template: tech-dsometr-front-template
 metadata:
   annotations:
     description: tech-dsometr Frontend service
-    openshift.io/display-name: tech-dsometr
-    openshift.io/provider-display-name: tech-dsometr
-    tags: tech-dsometr
-  name: tech-dsometr
+    openshift.io/display-name: tech-dsometr-front
+    openshift.io/provider-display-name: tech-dsometr-front
+    tags: tech-dsometr-front
+  name: tech-dsometr-front
 objects:
   - apiVersion: v1
     kind: DeploymentConfig
