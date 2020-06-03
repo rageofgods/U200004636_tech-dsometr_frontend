@@ -23,12 +23,12 @@ pipeline {
         }
         stage ("Build dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "/tech-dsometr/dev/tech-dsometr-frontend-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
         stage ("Deploy dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "/tech-dsometr/dev/tech-dsometr-frontend-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
             }
         }
         stage ("Build uat") {
