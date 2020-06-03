@@ -64,11 +64,11 @@ objects:
                 timeoutSeconds: 1
               resources: 
                 limits:
-                  cpu: '1'
-                  memory: 1Gi
+                  cpu: "100m"
+                  memory: "256Mi"
                 requests:
-                  cpu: 100m
-                  memory: 256Mi
+                  cpu: "100m"
+                  memory: "256Mi"
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           schedulerName: default-scheduler

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: test
+  name: Template
 objects:
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
