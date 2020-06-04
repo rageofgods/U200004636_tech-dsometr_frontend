@@ -9,7 +9,6 @@ withFolderProperties{
     OCP_CRED_ID = "${env.OCP_CRED_ID}"
     OCP_NAMESPACE = "${env.OCP_NAMESPACE}"
     OCP_APP_NAME = "${env.OCP_APP_NAME}"
-    OCP_APP_BASE_URL = "${env.OCP_APP_BASE_URL}"
     OCP_IMAGE_STREAM = "${env.OCP_IMAGE_STREAM}"
     OCP_TEMPLATE_NAME = "${env.OCP_TEMPLATE_NAME}"
     GIT_BASE_URL = "${env.GIT_BASE_URL}"
@@ -131,15 +130,5 @@ pipeline {
                 
             }
         }
-        /*stage("Application check") {
-            steps {
-                retry (3) {
-                    echo "=====getting application status====="
-                        sh """
-                        curl -v --silent https://${OCP_APP_NAME}-${OCP_NAMESPACE}.${OCP_APP_BASE_URL} 2>&1 | grep "Current build number is: ${GIT_COMMIT_SHORT}"
-                        """
-                }
-            }
-        }*/
     }
 }
