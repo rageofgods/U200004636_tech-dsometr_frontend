@@ -16,29 +16,76 @@ pipeline {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                buildName "$BUILD_NUMBER-$BRANCH-$GIT_COMMIT_SHORT"
+                script {
+                    if ("${params.BRANCH}" == 'null'){
+                        buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                    }
+                    else {
+                        buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                    }
+                }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                 buildDescription "Executed @ ${NODE_NAME}"
             }
         }
         stage ("Build dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-frontend-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "./dev/build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.dev
+                }
             }
         }
         stage ("Deploy dev") {
             steps{
-                build job: "/tech-dsometr/dev/tech-dsometr-frontend-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "./dev/deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.dev
+                }
             }
         }
         stage ("Build uat") {
             steps{
-                build job: "/tech-dsometr/uat/tech-dsometr-build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "./uat/build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.uat
+                }
             }
         }
         stage ("Deploy uat") {
             steps{
-                build job: "/tech-dsometr/uat/tech-dsometr-deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+                build job: "./uat/deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.uat
+                }
+            }
+        }
+        stage ("Build PreProd") {
+            steps{
+                build job: "./preprod/build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.preprod
+                }
+            }
+        }
+        stage ("Deploy PreProd") {
+            steps{
+                build job: "./preprod/deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.preprod
+                }
             }
         }
     }
