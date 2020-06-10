@@ -116,8 +116,6 @@ pipeline {
         }
         stage("OCP get status") {
             steps {
-                echo "=====Waiting 15 second to build process catch-up====="
-                sleep(time:15,unit:"SECONDS")
                 /*echo "=====ocp get podes status (must be alive for < 2 minutes)====="
                     sh """
                     oc get pods | grep -E "$OCP_APP_NAME.+[1-99]\\/[1-99]\\s+Running\\s+[0-99]\\s+([1-9]s|[1-9][1-9]s|1m)"
