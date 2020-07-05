@@ -48,6 +48,16 @@ pipeline {
                 }
             }
         }
+        stage ("Deploy dev4") {
+            steps{
+                build job: "./deploy/dev4/deploy", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
+            }
+            when {
+                expression {
+                    return params.deploy_dev4
+                }
+            }
+        }
         stage ("Build trust") {
             steps{
                 build job: "./build/trust/build", parameters: [[$class: 'StringParameterValue', name: 'BRANCH', value: "$BRANCH"]]
