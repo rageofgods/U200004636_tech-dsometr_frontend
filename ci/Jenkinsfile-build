@@ -1,21 +1,46 @@
+#!groovy
+
 withFolderProperties{
-    BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
-    RH_REGISTRY = "${env.RH_REGISTRY}"
-    RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
-    REGISTRY = "${env.REGISTRY}"
-    REGISTRY_CRED_ID = "${env.REGISTRY_CRED_ID}"
-    DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
-    OCP_APP_NAME = "${env.OCP_APP_NAME}"
+    // Required parameters
+    OCP_NAMESPACE = "${env.OCP_NAMESPACE}"
+    REGISTRY_TRUST = "${env.REGISTRY_TRUST}"
+    REGISTRY_TRUST_CRED_ID = "${env.REGISTRY_TRUST_CRED_ID}"
+    REGISTRY_DEV = "${env.REGISTRY_DEV}"
+    REGISTRY_DEV_CRED_ID = "${env.REGISTRY_DEV_CRED_ID}"
+    // Additional parameters
+    RH_REGISTRY_TRUST = "${env.RH_REGISTRY_TRUST}"
+    RH_REGISTRY_TRUST_CRED_ID = "${env.RH_REGISTRY_TRUST_CRED_ID}" 
+    RH_REGISTRY_DEV = "${env.RH_REGISTRY_DEV}"
+    RH_REGISTRY_DEV_CRED_ID = "${env.RH_REGISTRY_DEV_CRED_ID}" 
+    DOCKERFILE_NAME = "${env.DOCKERFILE_NAME}"
+    PYPI_BASE_URL_TRUST = "${env.PYPI_BASE_URL_TRUST}"
+    PYPI_PATH_URL_TRUST = "${env.PYPI_PATH_URL_TRUST}"
+    PYPI_TRUSTED_HOST_TRUST = "${env.PYPI_TRUSTED_HOST_TRUST}"
+    PYPI_BASE_URL_DEV = "${env.PYPI_BASE_URL_DEV}"
+    PYPI_PATH_URL_DEV = "${env.PYPI_PATH_URL_DEV}"
+    PYPI_TRUSTED_HOST_DEV = "${env.PYPI_TRUSTED_HOST_DEV}"
 }
 
-if (BUILD_ENVIRONMENT == '' || BUILD_ENVIRONMENT == null || BUILD_ENVIRONMENT == 'null') {
-    currentBuild.result = 'ABORTED'
-    error('Not defined BUILD_ENVIRONMENT in Folder properies plugin!')
+if (BUILD_ENVIRONMENT == 'trust') {
+    REGISTRY = REGISTRY_TRUST
+    REGISTRY_CRED_ID = REGISTRY_TRUST_CRED_ID
+    RH_REGISTRY = RH_REGISTRY_TRUST
+    RH_REGISTRY_CRED_ID = RH_REGISTRY_TRUST_CRED_ID
+    PYPI_BASE_URL = PYPI_BASE_URL_TRUST
+    PYPI_PATH_URL = PYPI_PATH_URL_TRUST
+    PYPI_TRUSTED_HOST = PYPI_TRUSTED_HOST_TRUST
 }
-if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
-    currentBuild.result = 'ABORTED'
-    error('Not defined OCP_APP_NAME in Folder properies plugin!')
+ 
+if (BUILD_ENVIRONMENT == 'dev') {
+    REGISTRY = REGISTRY_DEV
+    REGISTRY_CRED_ID = REGISTRY_DEV_CRED_ID
+    RH_REGISTRY = RH_REGISTRY_DEV
+    RH_REGISTRY_CRED_ID = RH_REGISTRY_DEV_CRED_ID
+    PYPI_BASE_URL = PYPI_BASE_URL_DEV
+    PYPI_PATH_URL = PYPI_PATH_URL_DEV
+    PYPI_TRUSTED_HOST = PYPI_TRUSTED_HOST_DEV
 }
+
 
 pipeline {
     agent {
@@ -34,19 +59,26 @@ pipeline {
     }
 
     stages {
+        /*stage ("Print env") {
+            steps {
+                sh 'printenv'
+            }
+        }*/
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                script {
-                    if ("${params.BRANCH}" == 'null'){
-                        buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                    }
-                    else {
-                        buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
-                    }
-                }
+                wrap([$class: 'BuildUser']){
+                    script {
+                        if ("${params.BRANCH}" == 'null'){
+                            buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                            }
+                        else {
+                            buildName "$BUILD_NUMBER-$BUILD_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                            }
+                            }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                buildDescription "Executed @ ${NODE_NAME}"
+                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
+                }
             }
         }
 
@@ -69,9 +101,12 @@ pipeline {
             steps {
                 echo "=====docker build====="
                 sh """
-                docker build -t $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKER_FILE_NAME \
+                docker build -t $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT -f $DOCKERFILE_NAME \
                     --build-arg RH_REGISTRY_ARG=${RH_REGISTRY} \
-                    --build-arg BUILD_NUMBER_ARG=${env.BUILD_TAG} .
+                    --build-arg BUILD_NUMBER_ARG=${env.BUILD_TAG} \
+                    --build-arg PYPI_BASE_URL_ARG=$PYPI_BASE_URL \
+                    --build-arg PYPI_PATH_URL_ARG=$PYPI_PATH_URL \
+                    --build-arg PYPI_TRUSTED_HOST_ARG=$PYPI_TRUSTED_HOST .
                 """
             }
         }
@@ -79,7 +114,7 @@ pipeline {
             steps {
                 echo "=====docker login and push====="
                 sh """
-                docker push $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT
+                docker push $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT
                 """
             }
         }

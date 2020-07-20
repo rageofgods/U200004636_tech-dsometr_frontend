@@ -1,5 +1,6 @@
+#!groovy
+
 withFolderProperties{
-    BUILD_ENVIRONMENT = "${env.BUILD_ENVIRONMENT}"
     DEPLOY_ENVIRONMENT = "${env.DEPLOY_ENVIRONMENT}"
     RH_REGISTRY = "${env.RH_REGISTRY}"
     RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
@@ -13,7 +14,7 @@ withFolderProperties{
     OCP_TEMPLATE_NAME = "${env.OCP_TEMPLATE_NAME}"
     GIT_BASE_URL = "${env.GIT_BASE_URL}"
     GIT_CRED_ID = "${env.GIT_CRED_ID}"
-    DOCKER_FILE_NAME = "${env.DOCKER_FILE_NAME}"
+    DOCKERFILE_NAME = "${env.DOCKERFILE_NAME}"
 }
 
 if (DEPLOY_ENVIRONMENT == '' || DEPLOY_ENVIRONMENT == null || DEPLOY_ENVIRONMENT == 'null') {
