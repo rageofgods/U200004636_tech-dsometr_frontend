@@ -1,29 +1,23 @@
 #!groovy
 
 withFolderProperties{
+    // Required parameters
     DEPLOY_ENVIRONMENT = "${env.DEPLOY_ENVIRONMENT}"
-    RH_REGISTRY = "${env.RH_REGISTRY}"
-    RH_REGISTRY_CRED_ID = "${env.RH_REGISTRY_CRED_ID}"
-    REGISTRY = "${env.REGISTRY}"
-    REGISTRY_CRED_ID = "${env.REGISTRY_CRED_ID}"
     OCP_URL_TARGET = "${env.OCP_URL_TARGET}"
     OCP_CRED_ID = "${env.OCP_CRED_ID}"
     OCP_NAMESPACE = "${env.OCP_NAMESPACE}"
-    OCP_APP_NAME = "${env.OCP_APP_NAME}"
+    REGISTRY_TRUST = "${env.REGISTRY_TRUST}"
+    REGISTRY_DEV = "${env.REGISTRY_DEV}"
+    // Additional parameters
     OCP_IMAGE_STREAM = "${env.OCP_IMAGE_STREAM}"
     OCP_TEMPLATE_NAME = "${env.OCP_TEMPLATE_NAME}"
-    GIT_BASE_URL = "${env.GIT_BASE_URL}"
-    GIT_CRED_ID = "${env.GIT_CRED_ID}"
-    DOCKERFILE_NAME = "${env.DOCKERFILE_NAME}"
 }
 
-if (DEPLOY_ENVIRONMENT == '' || DEPLOY_ENVIRONMENT == null || DEPLOY_ENVIRONMENT == 'null') {
-    currentBuild.result = 'ABORTED'
-    error('Not defined DEPLOY_ENVIRONMENT in Folder properies plugin!')
+if (BUILD_ENVIRONMENT == 'trust') {
+    REGISTRY = REGISTRY_TRUST
 }
-if (OCP_APP_NAME == '' || OCP_APP_NAME == null || OCP_APP_NAME == 'null') {
-    currentBuild.result = 'ABORTED'
-    error('Not defined OCP_APP_NAME in Folder properies plugin!')
+if (BUILD_ENVIRONMENT == 'dev') {
+    REGISTRY = REGISTRY_DEV
 }
 
 pipeline {
@@ -46,16 +40,18 @@ pipeline {
         stage("Set build name") {
             steps {
                 // use name of the patchset as the build name
-                script {
-                    if ("${params.BRANCH}" == 'null'){
-                        buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                    }
-                    else {
-                        buildName "$BUILD_NUMBER-${params.BRANCH}-$GIT_COMMIT_SHORT"
-                    }
-                }
+                wrap([$class: 'BuildUser']){
+                    script {
+                        if ("${params.BRANCH}" == 'null'){
+                            buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                            }
+                        else {
+                            buildName "$BUILD_NUMBER-$DEPLOY_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                            }
+                            }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                buildDescription "Executed @ ${NODE_NAME}"
+                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
+                }
             }
         }
         stage("OCP login") {
@@ -75,7 +71,7 @@ pipeline {
                     oc process -f $OCP_IMAGE_STREAM \
                                -p APP_NAME=$OCP_APP_NAME \
                                -p NAMESPACE_NAME=$OCP_NAMESPACE \
-                               -p REGISTRY_PATH=$REGISTRY/$OCP_APP_NAME:latest \
+                               -p REGISTRY_PATH=$REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:latest \
                                -o yaml | oc apply -f -
                     oc apply -f $OCP_TEMPLATE_NAME
                     """
@@ -89,7 +85,7 @@ pipeline {
             steps {
                 echo "=====ocp tag new image as latest====="
                     sh """
-                    oc tag $REGISTRY/$OCP_APP_NAME:$GIT_COMMIT_SHORT $OCP_APP_NAME:latest
+                    oc tag $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT $OCP_APP_NAME:latest
                     """
             }
         }
