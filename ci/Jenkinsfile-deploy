@@ -13,10 +13,10 @@ withFolderProperties{
     OCP_TEMPLATE_NAME = "${env.OCP_TEMPLATE_NAME}"
 }
 
-if (BUILD_ENVIRONMENT == 'trust') {
+if (DEPLOY_ENVIRONMENT == 'trust') {
     REGISTRY = REGISTRY_TRUST
 }
-if (BUILD_ENVIRONMENT == 'dev') {
+if (DEPLOY_ENVIRONMENT == 'dev') {
     REGISTRY = REGISTRY_DEV
 }
 
