@@ -41,6 +41,10 @@ if (BUILD_ENVIRONMENT == 'dev') {
     PYPI_TRUSTED_HOST = PYPI_TRUSTED_HOST_DEV
 }
 
+if (env.BUILD_USER == '' || env.BUILD_USER == null || env.BUILD_USER == 'null') {
+    env.BUILD_USER = "Jenkins"
+}
+
 
 pipeline {
     agent {
@@ -75,12 +79,9 @@ pipeline {
                         else {
                             buildName "$BUILD_NUMBER-$BUILD_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
                         }
-                        if (!env.BUILD_USER) {
-                            def BUILD_USER = "Jenkins"
-                        }
                     }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
+                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${env.BUILD_USER}"
                 }
             }
         }

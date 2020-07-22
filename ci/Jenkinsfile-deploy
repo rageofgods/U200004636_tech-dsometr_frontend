@@ -20,6 +20,10 @@ if (DEPLOY_ENVIRONMENT == 'dev') {
     REGISTRY = REGISTRY_DEV
 }
 
+if (env.BUILD_USER == '' || env.BUILD_USER == null || env.BUILD_USER == 'null') {
+    env.BUILD_USER = "Jenkins"
+}
+
 pipeline {
     agent {
         label "${DEPLOY_ENVIRONMENT}"
@@ -53,7 +57,7 @@ pipeline {
                         }
                     }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
+                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${env.BUILD_USER}"
                 }
             }
         }
