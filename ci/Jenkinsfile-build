@@ -71,17 +71,19 @@ pipeline {
                     script {
                         if ("${params.BRANCH}" == 'null'){
                             buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
-                            }
+                        }
                         else {
                             buildName "$BUILD_NUMBER-$BUILD_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
-                            }
-                            }
+                        }
+                        if (!env.BUILD_USER) {
+                            def BUILD_USER = "Jenkins"
+                        }
+                    }
                 //buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                     buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
                 }
             }
         }
-
         stage("Docker registry login") {
             steps {
                 echo "=====docker login registry====="
