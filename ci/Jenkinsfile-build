@@ -72,7 +72,10 @@ pipeline {
                             buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
                         }
                         else {
-                            buildName "$BUILD_NUMBER-$BUILD_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                            if (!env.BUILD_ENVIRONMENT) {
+                                env.BUILD_ENVIRONMENT = ""
+                            }
+                            buildName "${env.BUILD_NUMBER}-${env.BUILD_ENVIRONMENT}-${params.BRANCH}-$GIT_COMMIT_SHORT"
                         }
                         if (!env.BUILD_USER) {
                             env.BUILD_USER = "Jenkins"
