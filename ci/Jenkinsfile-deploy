@@ -92,7 +92,7 @@ pipeline {
             steps {
                 echo "=====ocp tag new image as latest====="
                     sh """
-                    oc tag $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT $OCP_APP_NAME:latest
+                    oc tag $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT $OCP_APP_NAME:latest -n $OCP_NAMESPACE
                     """
             }
         }
