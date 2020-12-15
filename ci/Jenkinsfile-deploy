@@ -74,7 +74,7 @@ pipeline {
             steps {
                 echo "=====ocp login====="
                     sh """
-                    oc process -n $OCP_NAMESPACE \ 
+                    oc process -n $OCP_NAMESPACE \
                                -f $OCP_IMAGE_STREAM \
                                -p APP_NAME=$OCP_APP_NAME \
                                -p NAMESPACE_NAME=$OCP_NAMESPACE \
