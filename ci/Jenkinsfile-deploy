@@ -66,6 +66,7 @@ pipeline {
                 withCredentials([string(credentialsId: "$OCP_CRED_ID", variable: 'TOKEN')]) {
                     sh """
                     oc login $OCP_URL_TARGET --token $TOKEN
+                    oc project $OCP_NAMESPACE
                     """
                 }
             }
